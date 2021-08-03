@@ -1,5 +1,7 @@
 <?php
-
+if (!isset($_COOKIE['modalVisualized'])) {
+    setcookie('modalVisualized', true, time() + (3600 * 24 * 7));
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -48,11 +50,13 @@
                     <?php } ?>
 
                     <div class="col-md-3 my-3">
-                        <div class="card add-curso">
-                            <i class="fas fa-folder-plus"></i>
-                            <h5 class="card-title fw-bold mb-0">ADICIONAR</h5>
-                            <h2 class="card-title fw-bold">CURSO</h2>
-                        </div>
+                        <a href="#" style="color: transparent;" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                            <div class="card add-curso">
+                                <i class="fas fa-folder-plus"></i>
+                                <h5 class="card-title fw-bold mb-0">ADICIONAR</h5>
+                                <h2 class="card-title fw-bold">CURSO</h2>
+                            </div>
+                        </a>
                     </div>
 
                 </div>
@@ -62,11 +66,19 @@
     </main>
 
     <?php include './layout/_footer.php' ?>
-    <?php include './partials/_modal.php' ?>
+
+    <?php
+    if (!isset($_COOKIE['modalVisualized'])) {
+        include './partials/_modal.php';
+    }
+
+    include './partials/_modalAdd.php';
+
+    ?>
 
     <script src="./assets/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/scripts.js"></script>
-    
+
 </body>
 
 </html>
