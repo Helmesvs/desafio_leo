@@ -1,7 +1,31 @@
 <?php
+
+require 'db.php';
+
 if (!isset($_COOKIE['modalVisualized'])) {
     setcookie('modalVisualized', true, time() + (3600 * 24 * 7));
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    switch ($_POST['type']) {
+        case "create":
+            include './app/Create.php';
+            break;
+
+        case "edit":
+            include './app/Update.php';
+            break;
+
+        case "delete":
+            include './app/Delete.php';
+            break;
+
+        default:
+            exit;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -32,22 +56,49 @@ if (!isset($_COOKIE['modalVisualized'])) {
                     <h3 class="fw-bold" style="color: #555555">MEUS CURSOS</h3>
                 </div>
 
+                <?php if (!empty($message)) { ?>
+                    <div class="alert alert-success" role="alert">
+                        <?= $message ?> </div>
+                <?php } ?>
+
                 <div class="row pb-4">
 
-                    <?php for ($i = 0; $i < 7; $i++) { ?>
+                    <?php
+
+                    $pdo = DB::conectar();
+                    $sql = 'SELECT * FROM courses ORDER BY id DESC';
+
+                    foreach ($pdo->query($sql) as $row) {
+                    ?>
                         <div class="col-md-3 my-3">
                             <div class="card">
-                                <img src="./assets/images/curso.png">
+
+                                <img src="./assets/uploads/<?= $row['image'] ?>" class="course-image">
+
+                                <a href="#" class="action edit" data-bs-toggle="modal" data-bs-target="#modalEdit<?= $row['id'] ?>">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+
+                                <form method="POST" action="/">
+                                    <input type="hidden" name="type" value="delete">
+                                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                    <button type="submit" class="action delete"><i class="fas fa-times-circle"></i></button>
+                                </form>
+
                                 <div class="card-body ">
-                                    <h5 class="card-title fw-bold">Lorem Ipsum is simply</h5>
-                                    <p class="card-text" style="color: #aeaeae;line-height: 20px;">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+                                    <h5 class="card-title fw-bold"><?= $row['title'] ?></h5>
+                                    <p class="card-text" style="color: #aeaeae;line-height: 20px;"><?= $row['description'] ?></p>
                                     <div class="d-grid gap-2">
-                                        <a href="#" class="btn btn-success rounded-pill fw-bold">VER CURSO</a>
+                                        <a href="/curso/<?= $row['slug'] ?>" class="btn btn-success rounded-pill fw-bold">VER CURSO</a>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
-                    <?php } ?>
+                    <?php
+                        include './partials/_modalEdit.php';
+                    }
+                    ?>
 
                     <div class="col-md-3 my-3">
                         <a href="#" style="color: transparent;" data-bs-toggle="modal" data-bs-target="#modalAdd">

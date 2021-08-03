@@ -89,6 +89,33 @@
     margin-right: 15px;
 }
 
+.card {
+    min-height: 350.45px;
+}
+
+.action {
+    position: absolute;
+    right: 0;
+    background: #e6e5e5;
+    color: #fff;
+    padding: 5px 10px;
+}
+
+.delete {
+    top: 37px;
+    border: none;
+}
+
+.delete:hover {
+    color: red;
+}
+
+.course-image {
+    height: 150px;
+    object-fit: cover;
+    object-position: center;
+}
+
 .card.add-curso {
     display: flex;
     align-items: center;
